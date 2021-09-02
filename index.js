@@ -17,7 +17,7 @@ app.use(
 
 app.use(cors());
 
-const CONNECTION_URL = `mongodb+srv://ashwin:ashwin123@cluster0.jsjkg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const CONNECTION_URL = process.env.CONNECTION_URL;
 
 const PORT = process.env.PORT || 5000;
 
