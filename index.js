@@ -15,6 +15,10 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("Hello to Trip Expense Tracker backend");
+});
+
 app.use(cors());
 
 const CONNECTION_URL = process.env.CONNECTION_URL;
