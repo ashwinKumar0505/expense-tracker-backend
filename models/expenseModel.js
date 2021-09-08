@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const expenseGroupSchema = mongoose.Schema({
   groupName: String,
+  userId: String,
   groupMembers: [String],
   expensesByPerson: {},
   expensesHistory: [

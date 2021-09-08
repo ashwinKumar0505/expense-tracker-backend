@@ -37,6 +37,9 @@ export const getGroupMembers = async (req, res) => {
 };
 
 export const createGroup = async (req, res) => {
+  const { userId } = req;
+
+  if (!userId) res.status(400).json({ message: "UnAuthorized." });
   const { groupName, groupMembers } = req.body;
 
   const expensesByPerson = {};
@@ -49,8 +52,9 @@ export const createGroup = async (req, res) => {
     };
   });
 
-  const updatedExpenseGroup = new ExpenseGroupModal({
+  const group = new ExpenseGroupModal({
     groupName,
+    userId,
     groupMembers,
     expensesByPerson: { ...expensesByPerson },
     expensesHistory: [],
@@ -58,8 +62,8 @@ export const createGroup = async (req, res) => {
   });
 
   try {
-    await updatedExpenseGroup.save();
-    res.status(201).json(updatedExpenseGroup);
+    await group.save();
+    res.status(201).json(group);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -241,6 +245,26 @@ export const getExpense = async (req, res) => {
     );
 
     res.status(200).json(expense);
+  } catch (error) {
+    res.status(404).json(error.message);
+  }
+};
+
+export const getGroupNames = async (req, res) => {
+  try {
+    const { userId } = req;
+    if (!userId) res.status(400).json({ message: "UnAuthorized." });
+
+    const expenseGroups = await ExpenseGroupModal.find({ userId });
+
+    res.status(200).json(
+      expenseGroups.map((group) => ({
+        id: group._id,
+        name: group.groupName,
+        memberCount: group.groupMembers.length,
+        amount: group.totalAmountInvested,
+      }))
+    );
   } catch (error) {
     res.status(404).json(error.message);
   }
